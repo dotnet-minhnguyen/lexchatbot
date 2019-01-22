@@ -1,9 +1,9 @@
 import { AfterViewChecked, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import * as AWS from 'aws-sdk';
-import { MessageModel } from './message-model';
 import { PostTextRequest } from 'aws-sdk/clients/lexruntime';
-import { OntrackApi } from './api';
+import { MessageModel } from './message-model';
+import { RetirewellService } from './retire-well.service';
+import * as AWS from 'aws-sdk';
 
 @Component({
   selector: 'app-chatbot',
@@ -31,7 +31,7 @@ import { OntrackApi } from './api';
   ]
 })
 export class ChatbotComponent implements OnInit, AfterViewChecked {
-  
+
   // Auto-scroll chat window
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
 
@@ -43,13 +43,12 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
   // Chat messages array
   messages: MessageModel[] = [new MessageModel(this.options.firstMessage, this.bot.botName)];
 
-  constructor(private _webApi: OntrackApi) {
+  constructor(private _retirewellService: RetirewellService) {
+    const credentials = new AWS.CognitoIdentityCredentials({IdentityPoolId: awsConfig.IdentityPoolId});
     // Set AWS configurations
-    AWS.config.region = awsConfig.region; // Region
-    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-      // Provide your Pool Id here
-      IdentityPoolId: awsConfig.IdentityPoolId//'us-east-1:e10e6d50-bd0c-4716-84a5-12619d859925',
-    });
+    AWS.config.region = awsConfig.region;
+    AWS.config.credentials = credentials;
+
     // Initialize AWS Lex object
     this.awsLex = new AWS.LexRuntime();
   }
@@ -77,6 +76,7 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
           // error
           this.messages.push(new MessageModel(data.message, 'error'));
         }
+        console.log(data);
         if (data) {
           this.bot.sessionAttributes = data.sessionAttributes;
           if (data.dialogState === 'ReadyForFulfillment') {
@@ -122,7 +122,7 @@ const awsConfig = {
 
 const botRequset: PostTextRequest = {
   botName: 'ontrack',
-  botAlias: '@latest',
+  botAlias: 'LATEST',
   userId: 'ontrack',
   inputText: '',
   sessionAttributes: {}
@@ -133,12 +133,4 @@ const appOptions = {
   firstMessage: 'You can ask me for help in booking a trip. Just type \'book a car\' or \'book a hotel\'.',
   isChatWindowVisible: false,
   user: 'user'
-}
-
-// const config2 = {
-//   cloudName: 'aws',
-//   region: 'us-east-1',
-//   identityPoolId: 'us-east-1:4b662f9b-cef6-401e-a6a6-cb486cc588d1',
-//   lexUserId: 'us-east-1_EECPK9F4M',
-//   lexBotname: 'chatbot'
-// }
+};

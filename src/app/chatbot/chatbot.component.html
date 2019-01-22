@@ -10,8 +10,8 @@
         <div>
           <span class="chat-time">{{msg.messageTime}}</span>
           <!--replace with switch case-->
-          <p *ngIf="msg.messageBy=='bot'" class='lexResponse'>{{msg.messageText}}</p>
-          <p *ngIf="msg.messageBy=='user'" class='userRequest'>{{msg.messageText}}</p>
+          <p *ngIf="msg.messageBy==bot.botName" class='lexResponse'>{{msg.messageText}}</p>
+          <p *ngIf="msg.messageBy==this.options.user" class='userRequest'>{{msg.messageText}}</p>
           <p *ngIf="msg.messageBy=='error'" class='lexError'>{{msg.messageText}}</p>
         </div>
         <div class="chat-message-content clearfix">

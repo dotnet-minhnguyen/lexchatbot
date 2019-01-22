@@ -3,9 +3,10 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { ChatbotComponent } from './chatbot/chatbot.component';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { OntrackApi } from './chatbot/api';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OntrackApi } from './chatbot/ontrack.api';
 import { HttpClientModule } from '@angular/common/http';
+import { RetirewellService } from './chatbot/retire-well.service';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,10 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserModule,
     BrowserAnimationsModule
   ],
-  providers: [OntrackApi],
+  providers: [
+    OntrackApi,
+    RetirewellService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

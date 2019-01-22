@@ -10,3 +10,23 @@ export class MessageModel {
     this.messageBy = messageBy;
   }
 }
+
+export enum ModelType {
+    Goals = 1,
+    Households,
+    Persons,
+    PersonFinancials,
+    HouseholdFinancials,
+    Assets,
+    Debts,
+    Assumptions,
+    PersonCalculates,
+    PersonFinancialCalculates,
+    RiskScores,
+    WillingnessScores,
+    Primary,
+    Activities,
+    Insurances,
+    HouseholdCalulates,
+    Scores,
+}
