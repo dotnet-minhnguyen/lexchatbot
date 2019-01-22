@@ -1,0 +1,5 @@
+{
+    cloudName: 'aws',
+    region: 'us-east-1',
+    identityPoolId: 'us-east-1:4b662f9b-cef6-401e-a6a6-cb486cc588d1',
+}
