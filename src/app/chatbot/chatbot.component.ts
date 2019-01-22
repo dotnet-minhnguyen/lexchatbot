@@ -67,7 +67,7 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
     // get message typed by user
     const message = this._getMessage(event);
     // add message to messages array
-    this.messages.push(new MessageModel(message, 'user'));
+    this.messages.push(new MessageModel(message, this.options.user));
     if (message.length > 0) {
       // send it to the Lex runtime
       this.bot.inputText = message;
@@ -115,15 +115,15 @@ const awsConfig = {
   region: 'us-east-1',
   User: 'ontrack',
   UserPool: 'ontrack',
-  UserPoolId: 'us-east-1:678583129427',
+  UserPoolId: 'ontrack',
   IdentityPool: 'ontrack',
   IdentityPoolId: 'us-east-1:4b662f9b-cef6-401e-a6a6-cb486cc588d1',
 };
 
 const botRequset: PostTextRequest = {
   botName: 'ontrack',
-  botAlias: 'LATEST',
-  userId: 'us-east-1_EECPK9F4M',
+  botAlias: '@latest',
+  userId: 'ontrack',
   inputText: '',
   sessionAttributes: {}
 };
@@ -131,7 +131,8 @@ const botRequset: PostTextRequest = {
 const appOptions = {
   inputPlaceHolder: 'I would like to book a car',
   firstMessage: 'You can ask me for help in booking a trip. Just type \'book a car\' or \'book a hotel\'.',
-  isChatWindowVisible: false
+  isChatWindowVisible: false,
+  user: 'user'
 }
 
 // const config2 = {
