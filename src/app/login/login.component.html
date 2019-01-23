@@ -1,0 +1,16 @@
+<div class="dropdown-menu">
+
+  <div class="form-group">
+    <label for="exampleDropdownFormEmail1">Email address</label>
+    <input type="email" class="form-control" [(ngModel)]="loginModel.Email" [ngModelOptions]="{standalone: true}" id="exampleDropdownFormEmail1"
+      placeholder="email@example.com">
+  </div>
+  <div class="form-group">
+    <label for="exampleDropdownFormPassword1">Password</label>
+    <input type="password" class="form-control" [(ngModel)]="loginModel.Password" [ngModelOptions]="{standalone: true}"
+      id="exampleDropdownFormPassword1" placeholder="Password">
+  </div>
+  <button type="submit" class="btn btn-primary" (click)="signin()">Sign in</button>
+  <button type="submit" class="btn btn-primary" (click)="getProfile()">Get Profile</button>
+
+</div>

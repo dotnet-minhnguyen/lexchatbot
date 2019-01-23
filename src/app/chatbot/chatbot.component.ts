@@ -1,9 +1,7 @@
-import { AfterViewChecked, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, OnInit, ViewChild, Input } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { PostTextRequest } from 'aws-sdk/clients/lexruntime';
-import { MessageModel, DialogState } from './message-model';
-import { RetirewellService } from './retire-well.service';
-import * as AWS from 'aws-sdk';
+import { MessageModel, DialogState } from './models/message-model';
+import { AwsLexService } from './services/aws-lex.service';
 
 @Component({
   selector: 'app-chatbot',
@@ -34,24 +32,10 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
 
   // Auto-scroll chat window
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+  @Input() user: any;
 
-  bot = botRequset;
-  aws = awsConfig;
-  options = lexUI;
-  // LexRuntime object declaration
-  awsLex: AWS.LexRuntime;
-  // Chat messages array
-  messages: MessageModel[] = [new MessageModel(this.options.firstMessage, this.bot.botName)];
 
-  constructor(private _retirewellService: RetirewellService) {
-    const credentials = new AWS.CognitoIdentityCredentials({IdentityPoolId: awsConfig.IdentityPoolId});
-    // Set AWS configurations
-    AWS.config.region = awsConfig.region;
-    AWS.config.credentials = credentials;
-
-    // Initialize AWS Lex object
-    this.awsLex = new AWS.LexRuntime();
-  }
+  constructor(private _lexService: AwsLexService) { }
 
   ngOnInit() {
     this.scrollToBottom();
@@ -66,27 +50,10 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
     // get message typed by user
     const message = this._getMessage(event);
     // add message to messages array
-    this.messages.push(new MessageModel(message, this.options.user));
+    this._lexService.push(new MessageModel(message, this._lexService.options.user));
     if (message.length > 0) {
-      // send it to the Lex runtime
-      this.bot.inputText = message;
-
-      this.awsLex.postText(this.bot, function (err, data) {
-        if (err) {
-          // error
-          this.messages.push(new MessageModel(data.message, 'error'));
-        }
-        console.log(data);
-        if (data) {
-          this.bot.sessionAttributes = data.sessionAttributes;
-          if (data.dialogState === DialogState.ReadyForFulfillment) {
-            this.messages.push(new MessageModel('Ready for fulfillment!', this.bot.botName));
-            // TODO:  show slot values
-          } else {
-            // capture the sessionAttributes for the next cycle
-            this.messages.push(new MessageModel(data.message, this.bot.botName));
-          }
-        }
+      this._lexService.postText(message, this.user, function (err, data) {
+        this._processMessage(err, data);
       }.bind(this));
     }
   }
@@ -100,7 +67,25 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
 
   // show hide chat window on chat header click
   onShowHideChatWindow() {
-    this.options.isChatWindowVisible = this.options.isChatWindowVisible === false ? true : false;
+    this._lexService.options.isChatWindowVisible = this._lexService.options.isChatWindowVisible === false ? true : false;
+  }
+
+  private _processMessage(err, data) {
+    if (err) {
+      // error
+      let rs = JSON.stringify({ data, err }, undefined, 2)
+      this._lexService.push(new MessageModel(rs, 'error'));
+    }
+    if (data) {
+      this._lexService.bot.sessionAttributes = data.sessionAttributes;
+      if (data.dialogState === DialogState.ReadyForFulfillment) {
+        this._lexService.push(new MessageModel('Ready for fulfillment!', this._lexService.bot.botName));
+        // TODO:  show slot values
+      } else {
+        // capture the sessionAttributes for the next cycle
+        this._lexService.push(new MessageModel(data.message, this._lexService.bot.botName));
+      }
+    }
   }
 
   private _getMessage(event): any {
@@ -111,23 +96,3 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
   }
 }
 
-const awsConfig = {
-  region: 'us-east-1',
-  IdentityPool: 'ontrack',
-  IdentityPoolId: 'us-east-1:4b662f9b-cef6-401e-a6a6-cb486cc588d1',
-};
-
-const botRequset: PostTextRequest = {
-  botName: 'ontrack',
-  botAlias: 'LATEST',
-  userId: 'ontrack',
-  inputText: '',
-  sessionAttributes: {}
-};
-
-const lexUI = {
-  inputPlaceHolder: 'I would like to book a car',
-  firstMessage: 'You can ask me for help in booking a trip. Just type \'book a car\' or \'book a hotel\'.',
-  isChatWindowVisible: false,
-  user: 'user',
-};
