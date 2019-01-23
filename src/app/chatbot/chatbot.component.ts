@@ -37,7 +37,7 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
 
   bot = botRequset;
   aws = awsConfig;
-  options = appOptions;
+  options = lexUI;
   // LexRuntime object declaration
   awsLex: AWS.LexRuntime;
   // Chat messages array
@@ -113,9 +113,6 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
 
 const awsConfig = {
   region: 'us-east-1',
-  User: 'ontrack',
-  UserPool: 'ontrack',
-  UserPoolId: 'ontrack',
   IdentityPool: 'ontrack',
   IdentityPoolId: 'us-east-1:4b662f9b-cef6-401e-a6a6-cb486cc588d1',
 };
@@ -128,9 +125,9 @@ const botRequset: PostTextRequest = {
   sessionAttributes: {}
 };
 
-const appOptions = {
+const lexUI = {
   inputPlaceHolder: 'I would like to book a car',
   firstMessage: 'You can ask me for help in booking a trip. Just type \'book a car\' or \'book a hotel\'.',
   isChatWindowVisible: false,
-  user: 'user'
+  user: 'user',
 };
