@@ -17,12 +17,12 @@
     const email = 'ontrack@admin.com';
     const password = 'admin';
     const loginBody = `grant_type=password&username=${email}&password=${password}&client_id=nab-client`;
-    
 
     const _accessToken = '';
     const _apiUrl = 'http://ontrack-prototype.codestream.com.sg/api';
     const _async = true;
 
+    // Execute
     var data = post('token', loginBody, processResponse);
 
     // --------------- Http Request Web API -----------------------
