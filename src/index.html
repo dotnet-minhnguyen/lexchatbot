@@ -14,44 +14,45 @@
   <app-root></app-root>
 
   <script>
-    // const _email = 'ontrack@admin.com';
-    // const _password = 'admin';
-    // const _loginBody = `grant_type=password&username=${_email}&password=${_password}&client_id=nab-client`;
+    const email = 'ontrack@admin.com';
+    const password = 'admin';
+    const loginBody = `grant_type=password&username=${email}&password=${password}&client_id=nab-client`;
     
 
-    // const _accessToken = '';
-    // const _apiUrl = 'http://ontrack-prototype.codestream.com.sg/api';
+    const _accessToken = '';
+    const _apiUrl = 'http://ontrack-prototype.codestream.com.sg/api';
+    const _async = true;
 
-    // var data = post('token', this._loginBody, this.processResponse);
-    // console.log(data);
+    var data = post('token', loginBody, processResponse);
 
-    // // --------------- Http Request Web API -----------------------
-    // function post(url, body, processResponse) {
-    //   const reqUrl = `${_apiUrl}/${url}`;
-    //   var xhr = new XMLHttpRequest();
+    // --------------- Http Request Web API -----------------------
+    function post(url, body, processResponse) {
+      const reqUrl = `${_apiUrl}/${url}`;
+      var xhr = new XMLHttpRequest();
 
-    //   xhr.open('POST', reqUrl, true);
-    //   // xhr.setRequestHeader('Authorization', 'Bearer ' + _accessToken);
-    //   xhr.send(body);
-    //   xhr.onreadystatechange = processResponse;
-    // }
-    // function get(url, processResponse) {
-    //   const reqUrl = `${_apiUrl}/${url}`;
-    //   var xhr = new XMLHttpRequest();
+      xhr.open('POST', reqUrl, _async);
+      // xhr.setRequestHeader('Authorization', 'Bearer ' + _accessToken);
+      xhr.send(body);
+      xhr.onreadystatechange = processResponse;
+    }
+    function get(url, processResponse) {
+      const reqUrl = `${_apiUrl}/${url}`;
+      var xhr = new XMLHttpRequest();
 
-    //   xhr.open('GET', reqUrl, true);
-    //   // xhr.setRequestHeader('Authorization', 'Bearer ' + _accessToken);
-    //   xhr.send();
-    //   xhr.onreadystatechange = processResponse;
-    // }
-    // function processResponse(xhr, e) {
-    //   if (xhr.readyState == 4 && xhr.status == 200) {
-    //     var token = JSON.parse(xhr.responseText);
-    //     var arraybuffer = xhr.response;
+      xhr.open('GET', reqUrl, _async);
+      // xhr.setRequestHeader('Authorization', 'Bearer ' + _accessToken);
+      xhr.send();
+      xhr.onreadystatechange = processResponse;
+    }
+    function processResponse(xhr, e) {
+      if (xhr.readyState == 4 && xhr.status == 200) {
+        var token = JSON.parse(xhr.responseText);
+        var arraybuffer = xhr.response;
+        console.log(arraybuffer, token);
 
-    //     return xhr.response;
-    //   }
-    // }
+        return xhr.response;
+      }
+    }
 
   </script>
 </body>
