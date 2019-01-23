@@ -30,3 +30,13 @@ export enum ModelType {
     HouseholdCalulates,
     Scores,
 }
+
+export const DialogState = {
+  Fulfilled: 'Fulfilled', // match
+  ReadyForFulfillment: 'ReadyForFulfillment', // Not match
+  ElicitIntent: 'ElicitIntent', // Error
+  Failed: 'Failed', // Error
+};
+// "intentName": "Help",
+// "message": "What can I help you with?",
+// "messageFormat": "PlainText",

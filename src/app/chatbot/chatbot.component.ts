@@ -1,7 +1,7 @@
 import { AfterViewChecked, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { PostTextRequest } from 'aws-sdk/clients/lexruntime';
-import { MessageModel } from './message-model';
+import { MessageModel, DialogState } from './message-model';
 import { RetirewellService } from './retire-well.service';
 import * as AWS from 'aws-sdk';
 
@@ -79,7 +79,7 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
         console.log(data);
         if (data) {
           this.bot.sessionAttributes = data.sessionAttributes;
-          if (data.dialogState === 'ReadyForFulfillment') {
+          if (data.dialogState === DialogState.ReadyForFulfillment) {
             this.messages.push(new MessageModel('Ready for fulfillment!', this.bot.botName));
             // TODO:  show slot values
           } else {
