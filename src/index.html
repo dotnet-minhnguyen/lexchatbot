@@ -24,27 +24,31 @@
 
     // Execute
     var data = post('token', loginBody, processResponse);
+    // var datas = new Promise();
 
     // --------------- Http Request Web API -----------------------
-    function post(url, body, processResponse) {
+    function post(url, body, next) {
       const reqUrl = `${_apiUrl}/${url}`;
       var xhr = new XMLHttpRequest();
 
       xhr.open('POST', reqUrl, _async);
       // xhr.setRequestHeader('Authorization', 'Bearer ' + _accessToken);
       xhr.send(body);
-      xhr.onreadystatechange = processResponse;
+      next(xhr);
+      // xhr.onreadystatechange = next(xhr);
     }
-    function get(url, processResponse) {
+    function get(url, next) {
       const reqUrl = `${_apiUrl}/${url}`;
       var xhr = new XMLHttpRequest();
 
       xhr.open('GET', reqUrl, _async);
       // xhr.setRequestHeader('Authorization', 'Bearer ' + _accessToken);
       xhr.send();
-      xhr.onreadystatechange = processResponse;
+      // xhr.onreadystatechange =  next(xhr, e);
+      next(xhr);
     }
-    function processResponse(xhr, e) {
+    function processResponse(xhr) {
+        console.log(xhr);
       if (xhr.readyState == 4 && xhr.status == 200) {
         var token = JSON.parse(xhr.responseText);
         var arraybuffer = xhr.response;
