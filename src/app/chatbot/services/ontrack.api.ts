@@ -5,7 +5,7 @@ import { catchError, tap } from 'rxjs/operators';
 
 @Injectable()
 export class OntrackApi {
-  private _apiUrl = 'http://ontrack-prototype.codestream.com.sg/api';
+  apiUrl = 'http://ontrack-prototype.codestream.com.sg/api';
 
   private _options = {};
 
@@ -22,7 +22,7 @@ export class OntrackApi {
 
   get<T>(apiUrl: string): Observable<T> {
     return this._httpClient
-      .get<T>(`${this._apiUrl}/${apiUrl}`, this._options)
+      .get<T>(`${this.apiUrl}/${apiUrl}`, this._options)
       .pipe(
         tap(_ => console.log('get', apiUrl)),
         catchError(this.handleError('get', []))
@@ -31,7 +31,7 @@ export class OntrackApi {
 
   signin(emailAddress: string, password: string) {
     const body = `grant_type=password&username=${emailAddress}&password=${password}&client_id=nab-client`;
-    return this._httpClient.post(`${this._apiUrl}/token`, body)
+    return this._httpClient.post(`${this.apiUrl}/token`, body)
       .pipe(
         tap(_ => {
           console.log('login', _);
@@ -43,7 +43,7 @@ export class OntrackApi {
 
   post<T>(apiUrl: string, body: any): Observable<T> {
     return this._httpClient
-      .post<T>(`${this._apiUrl}/${apiUrl}`, body, this._options)
+      .post<T>(`${this.apiUrl}/${apiUrl}`, body, this._options)
       .pipe(
         tap(_ => console.log('post', apiUrl)),
         catchError(this.handleError('post', []))

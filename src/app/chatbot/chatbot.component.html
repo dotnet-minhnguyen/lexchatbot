@@ -1,24 +1,24 @@
 <div id="live-chat">
   <header (click)="onShowHideChatWindow()" class="clearfix">
     <a href="#" class="chat-close">x</a>
-    <h4>{{_lexService.bot.botName}}</h4>
+    <h4>{{bot.botName}}</h4>
     <span class="chat-message-counter">3</span>
   </header>
-  <div [@expandCollapseChatWindow] *ngIf="_lexService.options.isChatWindowVisible" class="chat">
+  <div [@expandCollapseChatWindow] *ngIf="options.isChatWindowVisible" class="chat">
     <div  #scrollMe class="chat-history">
-      <div class="chat-message clearfix" *ngFor="let msg of _lexService.messages">
+      <div class="chat-message clearfix" *ngFor="let msg of messages">
         <div>
           <span class="chat-time">{{msg.messageTime}}</span>
           <!--replace with switch case-->
-          <p *ngIf="msg.messageBy==_lexService.bot.botName" class='lexResponse'>{{msg.messageText}}</p>
-          <p *ngIf="msg.messageBy==_lexService.options.user" class='userRequest'>{{msg.messageText}}</p>
+          <p *ngIf="msg.messageBy==bot.botName" class='lexResponse'>{{msg.messageText}}</p>
+          <p *ngIf="msg.messageBy==options.user" class='userRequest'>{{msg.messageText}}</p>
           <p *ngIf="msg.messageBy=='error'" class='lexError'>{{msg.messageText}}</p>
         </div>
         <div class="chat-message-content clearfix">
         </div>
       </div>
     </div>
-    <input id="message" type="text" (keyup.enter)="pushChat($event);" placeholder={{_lexService.options.inputPlaceHolder}}>
+    <input id="message" type="text" (keyup.enter)="pushChat($event);" placeholder={{options.inputPlaceHolder}}>
   </div>
 </div>
 

@@ -34,6 +34,9 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   @Input() user: any;
 
+  options = this._lexService.options;
+  bot = this._lexService.bot;
+  messages = this._lexService.messages;
 
   constructor(private _lexService: AwsLexService) { }
 
@@ -50,7 +53,7 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
     // get message typed by user
     const message = this._getMessage(event);
     // add message to messages array
-    this._lexService.push(new MessageModel(message, this._lexService.options.user));
+    this._lexService.push(new MessageModel(message, this.options.user));
     if (message.length > 0) {
       this._lexService.postText(message, this.user, function (err, data) {
         this._processMessage(err, data);
@@ -67,23 +70,23 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
 
   // show hide chat window on chat header click
   onShowHideChatWindow() {
-    this._lexService.options.isChatWindowVisible = this._lexService.options.isChatWindowVisible === false ? true : false;
+    this.options.isChatWindowVisible = this.options.isChatWindowVisible === false ? true : false;
   }
 
   private _processMessage(err, data) {
     if (err) {
       // error
-      let rs = JSON.stringify({ data, err }, undefined, 2)
+      const rs = JSON.stringify({ data, err }, undefined, 2);
       this._lexService.push(new MessageModel(rs, 'error'));
     }
     if (data) {
-      this._lexService.bot.sessionAttributes = data.sessionAttributes;
+      this.bot.sessionAttributes = data.sessionAttributes;
       if (data.dialogState === DialogState.ReadyForFulfillment) {
-        this._lexService.push(new MessageModel('Ready for fulfillment!', this._lexService.bot.botName));
+        this._lexService.push(new MessageModel('Ready for fulfillment!', this.bot.botName));
         // TODO:  show slot values
       } else {
         // capture the sessionAttributes for the next cycle
-        this._lexService.push(new MessageModel(data.message, this._lexService.bot.botName));
+        this._lexService.push(new MessageModel(data.message, this.bot.botName));
       }
     }
   }

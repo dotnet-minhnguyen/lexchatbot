@@ -23,38 +23,36 @@
     const _async = true;
 
     // Execute
-    var data = post('token', loginBody, processResponse);
-    // var datas = new Promise();
+    post('token', loginBody, (data) => console.log(data));
 
     // --------------- Http Request Web API -----------------------
-    function post(url, body, next) {
+    function post(url, body, callback) {
       const reqUrl = `${_apiUrl}/${url}`;
       var xhr = new XMLHttpRequest();
 
       xhr.open('POST', reqUrl, _async);
       // xhr.setRequestHeader('Authorization', 'Bearer ' + _accessToken);
       xhr.send(body);
-      next(xhr);
-      // xhr.onreadystatechange = next(xhr);
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          var response = JSON.parse(xhr.responseText);
+          callback(xhr.response);
+        }
+      }
     }
-    function get(url, next) {
+
+    function get(url, callback) {
       const reqUrl = `${_apiUrl}/${url}`;
       var xhr = new XMLHttpRequest();
 
       xhr.open('GET', reqUrl, _async);
       // xhr.setRequestHeader('Authorization', 'Bearer ' + _accessToken);
       xhr.send();
-      // xhr.onreadystatechange =  next(xhr, e);
-      next(xhr);
-    }
-    function processResponse(xhr) {
-        console.log(xhr);
-      if (xhr.readyState == 4 && xhr.status == 200) {
-        var token = JSON.parse(xhr.responseText);
-        var arraybuffer = xhr.response;
-        console.log(arraybuffer, token);
-
-        return xhr.response;
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          var response = JSON.parse(xhr.responseText);
+          callback(xhr.response);
+        }
       }
     }
 

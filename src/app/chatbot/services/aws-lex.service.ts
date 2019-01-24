@@ -3,6 +3,7 @@ import { PostTextRequest } from 'aws-sdk/clients/lexruntime';
 import * as AWS from 'aws-sdk';
 import { MessageModel } from '../models/message-model';
 import { RetirewellService } from './retire-well.service';
+import { OntrackApi } from './ontrack.api';
 
 @Injectable({
   providedIn: 'root'
@@ -10,35 +11,41 @@ import { RetirewellService } from './retire-well.service';
 export class AwsLexService {
 
   bot = botRequset;
-  aws = awsConfig;
   options = lexUI;
   // LexRuntime object declaration
-  awsLex: AWS.LexRuntime;
+  private _awsLex: AWS.LexRuntime;
   // Chat messages array
-  messages: MessageModel[] = [new MessageModel(this.options.firstMessage, this.bot.botName)];
+  private _messages: MessageModel[] = [new MessageModel(this.options.firstMessage, this.bot.botName)];
+  public get messages(): MessageModel[] {
+    return this._messages;
+  }
 
-  constructor(private _retirewellService: RetirewellService) {
+
+  constructor(private _retirewellService: RetirewellService,
+    private _ontrackApi: OntrackApi) {
+
     const credentials = new AWS.CognitoIdentityCredentials({IdentityPoolId: awsConfig.IdentityPoolId});
     // Set AWS configurations
     AWS.config.region = awsConfig.region;
     AWS.config.credentials = credentials;
 
     // Initialize AWS Lex object
-    this.awsLex = new AWS.LexRuntime();
+    this._awsLex = new AWS.LexRuntime();
   }
 
   public push(message) {
     // send it to the Lex runtime
-    this.messages.push(message);
+    this._messages.push(message);
   }
 
   public postText(message, user, callback) {
     // send it to the Lex runtime
     this.bot.inputText = message;
     this.bot.sessionAttributes  = {
-      myAge: user.access_token
-    }
-    this.awsLex.postText(this.bot, callback);
+      access_token: user ? user.access_token : null,
+      api_url: this._ontrackApi.apiUrl,
+    };
+    this._awsLex.postText(this.bot, callback);
   }
 }
 
