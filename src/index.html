@@ -22,8 +22,33 @@
     const _apiUrl = 'http://ontrack-prototype.codestream.com.sg/api';
     const _async = true;
 
+    callAPI(loginBody, (data) => console.log(data));
+
+    var http = require('http');
+    function callAPI(callback) {
+        var url = `chat-bot/get-survey?modelType=1`;
+        // the post options
+        var options = {
+            host: _apiUrl,
+            path: loginBody,
+            method: 'POST',
+            headers: {
+                'accept': 'application/json',
+                // 'Authorization': 'Bearer ' + event.sessionAttributes.access_token
+            }
+        };
+
+        var dataStr = "";
+        var req = http.request(options, function (response) {
+            response.on('data', data => dataStr += data);
+            response.on('end', () => callback(JSON.parse(dataStr)));
+        });
+        //req.on('error', err => '');
+        req.end();
+    }
+
     // Execute
-    post('token', loginBody, (data) => console.log(data));
+    // post('token', loginBody, (data) => console.log(data));
 
     // --------------- Http Request Web API -----------------------
     function post(url, body, callback) {

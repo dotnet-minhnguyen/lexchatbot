@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>LexChatBot</title>
+  <base href="/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+
+<body>
+  <app-root></app-root>
+
+  <script>
+    const email = 'ontrack@admin.com';
+    const password = 'admin';
+    const loginBody = `grant_type=password&username=${email}&password=${password}&client_id=nab-client`;
+
+    const _accessToken = '';
+    const _apiUrl = 'http://ontrack-prototype.codestream.com.sg/api';
+    const _async = true;
+
+    callAPI(loginBody, (data) => console.log(data));
+
+    var http = require('http');
+    function callAPI(callback) {
+        var url = `chat-bot/get-survey?modelType=1`;
+        // the post options
+        var options = {
+            host: _apiUrl,
+            path: loginBody,
+            method: 'POST',
+            headers: {
+                'accept': 'application/json',
+                // 'Authorization': 'Bearer ' + event.sessionAttributes.access_token
+            }
+        };
+
+        var dataStr = "";
+        var req = http.request(options, function (response) {
+            response.on('data', data => dataStr += data);
+            response.on('end', () => callback(JSON.parse(dataStr)));
+        });
+        //req.on('error', err => '');
+        req.end();
+    }
+
+    // Execute
+    // post('token', loginBody, (data) => console.log(data));
+
+    // --------------- Http Request Web API -----------------------
+    function post(url, body, callback) {
+      const reqUrl = `${_apiUrl}/${url}`;
+      var xhr = new XMLHttpRequest();
+
+      xhr.open('POST', reqUrl, _async);
+      // xhr.setRequestHeader('Authorization', 'Bearer ' + _accessToken);
+      xhr.send(body);
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          var response = JSON.parse(xhr.responseText);
+          callback(xhr.response);
+        }
+      }
+    }
+
+    function get(url, callback) {
+      const reqUrl = `${_apiUrl}/${url}`;
+      var xhr = new XMLHttpRequest();
+
+      xhr.open('GET', reqUrl, _async);
+      // xhr.setRequestHeader('Authorization', 'Bearer ' + _accessToken);
+      xhr.send();
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          var response = JSON.parse(xhr.responseText);
+          callback(xhr.response);
+        }
+      }
+    }
+
+  </script>
+<script type="text/javascript" src="runtime.js"></script><script type="text/javascript" src="polyfills.js"></script><script type="text/javascript" src="styles.js"></script><script type="text/javascript" src="vendor.js"></script><script type="text/javascript" src="main.js"></script></body>
+
+</html>
